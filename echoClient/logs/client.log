@@ -1,0 +1,4 @@
+Hello World!
+Test
+18:53:23.781 [main] INFO  ui.Application - Hello World!
+18:53:23.782 [main] TRACE ui.Application - Test
