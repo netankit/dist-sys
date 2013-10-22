@@ -91,6 +91,10 @@ public class TCPConnection extends AbstractTCPConnection {
 		unlockWrite();
 	}
 
+	/**
+	 * @throws UnsupportedCharsetException
+	 *             when charset is not ASCII.
+	 */
 	@Override
 	public String receiveString(Charset charset) throws IOException {
 		return receiveString(DEFAULT_STRING_DELIMITER, charset);
@@ -98,6 +102,10 @@ public class TCPConnection extends AbstractTCPConnection {
 
 	private static final Charset ASCII = Charset.forName("ASCII");
 
+	/**
+	 * @throws UnsupportedCharsetException
+	 *             when charset is not ASCII.
+	 */
 	@Override
 	public String receiveString(String delimiter, Charset charset)
 			throws IOException {
@@ -108,18 +116,20 @@ public class TCPConnection extends AbstractTCPConnection {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		byte lastByte;
+		byte lastByte = 0;
 
-		// TODO: This will not work when a character is more than one byte 
+		// TODO: This will not work when a character is more than one byte
 		// (= not ASCII). So it's fine for now. Has to be changed if needed.
 		lockRead();
-		while (true) {
+		while (lastByte != -1) {
 			lastByte = (byte) in.read();
 
-			sb.append((char) lastByte);
+			if (lastByte != -1) {
+				sb.append((char) lastByte);
 
-			if (lastByte == delimiter.getBytes(ASCII)[0]) {
-				break;
+				if (lastByte == delimiter.getBytes(ASCII)[0]) {
+					break;
+				}
 			}
 		}
 		unlockRead();
