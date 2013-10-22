@@ -110,8 +110,8 @@ public class TCPConnection extends AbstractTCPConnection {
 		StringBuilder sb = new StringBuilder();
 		byte lastByte;
 
-		// TODO: This will not work when a character is more than one byte (=
-		// not ASCII). So it's fine for now. Has to be changed if needed.
+		// TODO: This will not work when a character is more than one byte 
+		// (= not ASCII). So it's fine for now. Has to be changed if needed.
 		lockRead();
 		while (true) {
 			lastByte = (byte) in.read();
