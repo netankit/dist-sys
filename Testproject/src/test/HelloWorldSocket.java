@@ -7,6 +7,11 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+
+import communication.Connection;
+import communication.tcp.TCPConnection;
 
 public class HelloWorldSocket {
 
@@ -42,14 +47,9 @@ public class HelloWorldSocket {
 					server = new ServerSocket(PORT);
 					// wait for a connection being established by the client
 					socket = server.accept();
-					// create a writer which can send strings through the
-					// socket.
-					PrintWriter out = new PrintWriter(socket.getOutputStream());
-					// send the string
-					out.println("Hallo Welt!");
-					// force to send the string, if it was not sent
-					// automatically (buffered!)
-					out.flush();
+					
+					Connection connection = new TCPConnection(socket);
+					connection.sendString("Hello World!\n", Charset.forName("ASCII"));
 
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -76,6 +76,26 @@ public class HelloWorldSocket {
 
 	public void receiveHelloWorldMessage() {
 
+		
+		try {
+			Connection connection = new TCPConnection(new Socket("localhost", PORT));
+			
+			System.out.println(connection.receiveString("\n", Charset.forName("ASCII")));
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+		/*
 		// the client side of the connection
 		Socket socket = null;
 		// strings can be read by that reader from a stream
@@ -104,7 +124,7 @@ public class HelloWorldSocket {
 					// ignore
 				}
 			}
-		}
+		}*/
 
 	}
 

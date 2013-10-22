@@ -4,8 +4,29 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 
 public class TCPConnection extends AbstractTCPConnection {
+
+	/**
+	 * Creates an empty connection. Call {@link #connect(InetSocketAddress)} or
+	 * {@link #connect(InetSocketAddress, int)} before using it!
+	 */
+	public TCPConnection() {
+		super();
+	}
+
+	/**
+	 * Creates a new connection using the given socket.
+	 * 
+	 * @param sock
+	 *            The socket to use for this connection.
+	 * @throws NullPointerException
+	 *             When the given socket is null.
+	 */
+	public TCPConnection(Socket sock) throws NullPointerException {
+		super(sock);
+	}
 
 	/**
 	 * @throws IOException
@@ -75,28 +96,31 @@ public class TCPConnection extends AbstractTCPConnection {
 		return receiveString(DEFAULT_STRING_DELIMITER, charset);
 	}
 
+	private static final Charset ASCII = Charset.forName("ASCII");
+
 	@Override
 	public String receiveString(String delimiter, Charset charset)
 			throws IOException {
+
+		if (!charset.equals(ASCII)) {
+			throw new UnsupportedCharsetException(
+					"This method currently supports only ASCII for receiving strings!");
+		}
+
 		StringBuilder sb = new StringBuilder();
-		byte[] buffer = new byte[1024];
-		int readBytes = 0;
-		String appString;
+		byte lastByte;
 
-		// TODO: This may not work when a character is more than one byte (= not ASCII). So
-		// it's fine for now. Any idea how to solve this?
+		// TODO: This will not work when a character is more than one byte (=
+		// not ASCII). So it's fine for now. Has to be changed if needed.
 		lockRead();
-		while (!sb.toString().endsWith(delimiter)) {
-			readBytes = in.read(buffer, readBytes, buffer.length - readBytes);
+		while (true) {
+			lastByte = (byte) in.read();
 
-			if (readBytes == -1)
+			sb.append((char) lastByte);
+
+			if (lastByte == delimiter.getBytes(ASCII)[0]) {
 				break;
-
-			appString = new String(buffer, charset);
-			sb.append(appString);
-
-			if (appString.endsWith(delimiter))
-				break;
+			}
 		}
 		unlockRead();
 
