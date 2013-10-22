@@ -43,12 +43,15 @@ public class TCPConnection extends AbstractTCPConnection {
 		lockRead();
 		lockWrite();
 
-		Socket s = new Socket();
-		s.connect(address);
-		init(s);
+		try {
+			Socket s = new Socket();
+			s.connect(address);
+			init(s);
+		} finally {
+			unlockWrite();
+			unlockRead();
+		}
 
-		unlockWrite();
-		unlockRead();
 	}
 
 	/**
@@ -69,12 +72,14 @@ public class TCPConnection extends AbstractTCPConnection {
 		lockRead();
 		lockWrite();
 
-		Socket s = new Socket();
-		s.connect(address, timeout);
-		init(s);
-
-		unlockWrite();
-		unlockRead();
+		try {
+			Socket s = new Socket();
+			s.connect(address, timeout);
+			init(s);
+		} finally {
+			unlockWrite();
+			unlockRead();
+		}
 	}
 
 	@Override
@@ -87,8 +92,12 @@ public class TCPConnection extends AbstractTCPConnection {
 		byte[] bytes = string.getBytes(charset);
 
 		lockWrite();
-		out.write(bytes);
-		unlockWrite();
+
+		try {
+			out.write(bytes);
+		} finally {
+			unlockWrite();
+		}
 	}
 
 	/**
@@ -121,18 +130,21 @@ public class TCPConnection extends AbstractTCPConnection {
 		// TODO: This will not work when a character is more than one byte
 		// (= not ASCII). So it's fine for now. Has to be changed if needed.
 		lockRead();
-		while (lastByte != -1) {
-			lastByte = (byte) in.read();
+		try {
+			while (lastByte != -1) {
+				lastByte = (byte) in.read();
 
-			if (lastByte != -1) {
-				sb.append((char) lastByte);
+				if (lastByte != -1) {
+					sb.append((char) lastByte);
 
-				if (lastByte == delimiter.getBytes(ASCII)[0]) {
-					break;
+					if (lastByte == delimiter.getBytes(ASCII)[0]) {
+						break;
+					}
 				}
 			}
+		} finally {
+			unlockRead();
 		}
-		unlockRead();
 
 		return sb.toString();
 	}
