@@ -182,4 +182,11 @@ public abstract class AbstractTCPConnection implements Connection {
 		return bytes;
 
 	}
+	
+	/**
+	 * Closes the socket.
+	 */
+	public void close() throws IOException{
+		socket.close();
+	}
 }

@@ -1,5 +1,6 @@
 package communication;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -9,9 +10,9 @@ import java.nio.charset.Charset;
  * @author Daniel
  * 
  */
-public interface Connection {
+public interface Connection extends Closeable{
 
-	public static final String DEFAULT_STRING_DELIMITER = "\n";
+	public static final String DEFAULT_STRING_DELIMITER = "\r";
 
 	/**
 	 * Sends a string.
