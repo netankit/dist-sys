@@ -46,6 +46,16 @@ public class HelloWorldSocket {
 					
 					Connection connection = new TCPConnection(socket);
 					connection.sendString("Hello World!\n", Charset.forName("ASCII"));
+					
+					/*
+					// create a writer which can send strings through the
+					// socket.
+					PrintWriter out = new PrintWriter(socket.getOutputStream());
+					// send the string
+					out.println("Hallo Welt!".);
+					// force to send the string, if it was not sent
+					// automatically (buffered!)
+					out.flush();*/
 
 				} catch (IOException e) {
 					e.printStackTrace();
