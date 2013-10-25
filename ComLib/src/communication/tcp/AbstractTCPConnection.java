@@ -33,17 +33,17 @@ public abstract class AbstractTCPConnection implements Connection {
 	public AbstractTCPConnection() {
 	}
 
-	/**
-	 * Creates a new connection using the given socket.
-	 * 
-	 * @param sock
-	 *            The socket to use for this connection.
-	 * @throws NullPointerException
-	 *             When the given socket is null.
-	 */
-	public AbstractTCPConnection(Socket sock) throws NullPointerException {
-		init(sock);
-	}
+	// /**
+	// * Creates a new connection using the given socket.
+	// *
+	// * @param sock
+	// * The socket to use for this connection.
+	// * @throws NullPointerException
+	// * When the given socket is null.
+	// */
+	// public AbstractTCPConnection(Socket sock) throws NullPointerException {
+	// init(sock);
+	// }
 
 	protected void init(Socket sock) {
 		lockRead();
