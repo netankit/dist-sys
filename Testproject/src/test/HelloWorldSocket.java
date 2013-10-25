@@ -1,6 +1,7 @@
 package test;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -44,7 +45,8 @@ public class HelloWorldSocket {
 					// wait for a connection being established by the client
 					socket = server.accept();
 					
-					Connection connection = new TCPConnection(socket);
+					Connection connection = new TCPConnection();
+					connection.connect(new InetSocketAddress("localhost", PORT));
 					connection.sendString("Hello World!\n", Charset.forName("ASCII"));
 					
 					/*
@@ -84,7 +86,8 @@ public class HelloWorldSocket {
 
 		
 		try {
-			Connection connection = new TCPConnection(new Socket("localhost", PORT));
+			Connection connection = new TCPConnection();
+			connection.connect(new InetSocketAddress("localhost", PORT));
 			
 			System.out.println(connection.receiveString("\n", Charset.forName("ASCII")));
 		} catch (NullPointerException e) {

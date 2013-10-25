@@ -1,7 +1,7 @@
 package test;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 
@@ -17,8 +17,8 @@ public class EchoServerTest {
 		Connection conn=null;
 		
 		try {
-			Socket s = new Socket("131.159.52.1", 50000);
-			conn = new TCPConnection(s);
+			conn = new TCPConnection();
+			conn.connect(new InetSocketAddress("131.159.52.1", 50000));
 			
 			conn.sendString("Hello!\r", ASCII);
 			System.out.print(conn.receiveString(ASCII));

@@ -16,17 +16,17 @@ public class TCPConnection extends AbstractTCPConnection {
 		super();
 	}
 
-	/**
-	 * Creates a new connection using the given socket.
-	 * 
-	 * @param sock
-	 *            The socket to use for this connection.
-	 * @throws NullPointerException
-	 *             When the given socket is null.
-	 */
-	public TCPConnection(Socket sock) throws NullPointerException {
-		super(sock);
-	}
+//	/**
+//	 * Creates a new connection using the given socket.
+//	 * 
+//	 * @param sock
+//	 *            The socket to use for this connection.
+//	 * @throws NullPointerException
+//	 *             When the given socket is null.
+//	 */
+//	public TCPConnection(Socket sock) throws NullPointerException {
+//		super(sock);
+//	}
 
 	/**
 	 * @throws IOException
