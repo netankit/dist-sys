@@ -10,9 +10,14 @@ import java.nio.charset.Charset;
  * @author Daniel
  * 
  */
-public interface Connection extends Closeable{
+public interface Connection extends Closeable {
 
 	public static final String DEFAULT_STRING_DELIMITER = "\r";
+
+	/**
+	 * Represents the ASCII charset.
+	 */
+	public static final Charset ASCII = Charset.forName("ASCII");
 
 	/**
 	 * Sends a string.
@@ -37,7 +42,8 @@ public interface Connection extends Closeable{
 	public void sendString(String string) throws IOException;
 
 	/**
-	 * Receives a string. The string is assumed to be terminated by the {@link #DEFAULT_STRING_DELIMITER} ({@value #DEFAULT_STRING_DELIMITER}).
+	 * Receives a string. The string is assumed to be terminated by the
+	 * {@link #DEFAULT_STRING_DELIMITER} ({@value #DEFAULT_STRING_DELIMITER}).
 	 * 
 	 * @param charset
 	 *            The charset of the string (UTF-8, ASCII, ...).

@@ -109,8 +109,6 @@ public class TCPConnection extends AbstractTCPConnection {
 		return receiveString(DEFAULT_STRING_DELIMITER, charset);
 	}
 
-	private static final Charset ASCII = Charset.forName("ASCII");
-
 	/**
 	 * @throws UnsupportedCharsetException
 	 *             when charset is not ASCII.
