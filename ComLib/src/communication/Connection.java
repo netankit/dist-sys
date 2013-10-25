@@ -2,6 +2,8 @@ package communication;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.charset.Charset;
 
 /**
@@ -68,4 +70,28 @@ public interface Connection extends Closeable {
 	public String receiveString(String delimiter, Charset charset)
 			throws IOException;
 
+
+
+	/**
+	 * Sets up the connection to the given address.
+	 * 
+	 * @see Socket#connect(java.net.SocketAddress)
+	 * 
+	 * @param address
+	 *            The address to which the connection will be established.
+	 */
+	public abstract void connect(InetSocketAddress address) throws IOException;
+
+	/**
+	 * Sets up the connection to the given address.
+	 * 
+	 * @see Socket#connect(java.net.SocketAddress, int)
+	 * 
+	 * @param address
+	 *            The address to which the connection will be established.
+	 * @param timeout
+	 *            The timeout for establishing the connection.
+	 */
+	public abstract void connect(InetSocketAddress address, int timeout)
+			throws IOException;
 }

@@ -68,29 +68,6 @@ public abstract class AbstractTCPConnection implements Connection {
 	}
 
 	/**
-	 * Sets up the connection to the given address.
-	 * 
-	 * @see Socket#connect(java.net.SocketAddress)
-	 * 
-	 * @param address
-	 *            The address to which the connection will be established.
-	 */
-	public abstract void connect(InetSocketAddress address) throws IOException;
-
-	/**
-	 * Sets up the connection to the given address.
-	 * 
-	 * @see Socket#connect(java.net.SocketAddress, int)
-	 * 
-	 * @param address
-	 *            The address to which the connection will be established.
-	 * @param timeout
-	 *            The timeout for establishing the connection.
-	 */
-	public abstract void connect(InetSocketAddress address, int timeout)
-			throws IOException;
-
-	/**
 	 * Locks for a read operation on this connection.
 	 * 
 	 * @see ReentrantLock#lock()
