@@ -45,13 +45,25 @@ public abstract class AbstractTCPConnection implements Connection {
 	// init(sock);
 	// }
 
-	protected void init(Socket sock) {
+	/**
+	 * Initializes the connection. A non-initialized connection will not work!
+	 * 
+	 * @param sock
+	 *            The already connected socket, which is used for further
+	 *            communication.
+	 * @throws IOException
+	 *             When there existed a former socket and closing it fails.
+	 */
+	protected void init(Socket sock) throws IOException {
 		lockRead();
 		lockWrite();
+
+		close();
 
 		if (sock == null) {
 			throw new NullPointerException("Given socket is null");
 		}
+
 		this.socket = sock;
 
 		try {
@@ -159,11 +171,12 @@ public abstract class AbstractTCPConnection implements Connection {
 		return bytes;
 
 	}
-	
+
 	/**
 	 * Closes the socket.
 	 */
-	public void close() throws IOException{
-		socket.close();
+	public void close() throws IOException {
+		if (socket != null)
+			socket.close();
 	}
 }
