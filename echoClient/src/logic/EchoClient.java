@@ -9,22 +9,27 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ui.CommandLine;
+import ui.CommandLineUser;
 import communication.Connection;
 import communication.tcp.TCPConnection;
 
-public class echoClient implements ClientInterface {
+public class EchoClient implements CommandLineUser {
 	private Connection connection = null;
-	private static Logger logger = LogManager.getLogger(echoClient.class);
+	private static Logger logger = LogManager.getLogger(EchoClient.class);
 
-	
+	private CommandLine commandLine;
 
-	public echoClient() {
+	public EchoClient() {
 		this.connection = new TCPConnection();
+		this.commandLine = new CommandLine(this);
+		commandLine.start();
 	}
 
-
 	@Override
-	public String connect(String address, String port) {
+	public void connect(String address, String port) {
+
+		String output;
 
 		try {
 			int portnumber = Integer.parseInt(port);
@@ -33,33 +38,43 @@ public class echoClient implements ClientInterface {
 			String reply = connection.receiveString(Connection.ASCII);
 			logger.info("Reply from server: " + reply);
 
-			return reply;
+			output = reply;
 
 		} catch (UnknownHostException e) {
-			return "The given host address could not be resolved. Please check if the address is valid.";
+			output = "The given host address could not be resolved. Please check if the address is valid.";
 		} catch (IllegalArgumentException e) {
-			return "The given address or port is invalid.";
+			output = "The given address or port is invalid.";
 		} catch (SocketTimeoutException e) {
-			return "Your request timed out. Could not connect to server.";
+			output = "Your request timed out. Could not connect to server.";
 		} catch (IOException e) {
-			return "An error occured. Could not connect to server.";
+			output = "An error occured. Could not connect to server.";
 		}
+
+		commandLine.printLine(output);
 	}
 
 	// to do
 	@Override
-	public String disconnect() {
+	public void disconnect() {
+
+		String output;
+
 		try {
 			connection.close();
-			return "Client was disconnected from the server.";
+			output = "Client was disconnected from the server.";
 		} catch (IOException e) {
-			return "Error while trying to disconnect from server.";
+			output = "Error while trying to disconnect from server.";
 		}
+
+		commandLine.printLine(output);
 	}
 
 	// to do
 	@Override
-	public String sendMessage(String message) {
+	public void sendMessage(String message) {
+
+		String output;
+
 		try {
 			logger.info("This message will be send to server: " + message);
 			connection.sendString(
@@ -67,57 +82,68 @@ public class echoClient implements ClientInterface {
 					Connection.ASCII);
 			String reply = connection.receiveString(Connection.ASCII);
 			logger.info("Received reply message from server: " + reply);
-			return reply;
+			output = reply;
 		} catch (IOException e) {
-			return "An error occured. " + disconnect();
+			output = "An error occured.";
+			disconnect();
 		}
+
+		commandLine.printLine(output);
 	}
 
 	// to do: set all loggers to the right level
 	@Override
-	public String setLoglevel(String loglevel) {
+	public void setLoglevel(String loglevel) {
+
+		String output;
+
 		loglevel = loglevel.toUpperCase();
-	
+
 		if (loglevel.equals("ALL")) {
 			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.ALL);
 		} else if (loglevel.equals("DEBUG")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.DEBUG);
+			((org.apache.logging.log4j.core.Logger) logger)
+					.setLevel(Level.DEBUG);
 		} else if (loglevel.equals("INFO")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.INFO);
+			((org.apache.logging.log4j.core.Logger) logger)
+					.setLevel(Level.INFO);
 		} else if (loglevel.equals("WARN")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.WARN);
+			((org.apache.logging.log4j.core.Logger) logger)
+					.setLevel(Level.WARN);
 		} else if (loglevel.equals("ERROR")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.ERROR);
+			((org.apache.logging.log4j.core.Logger) logger)
+					.setLevel(Level.ERROR);
 		} else if (loglevel.equals("FATAL")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.FATAL);
+			((org.apache.logging.log4j.core.Logger) logger)
+					.setLevel(Level.FATAL);
 		} else if (loglevel.equals("OFF")) {
 			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.OFF);
 		} else {
-			return "The loglevel is invalid. Levels: (ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF)";
+			output = "The loglevel is invalid. Levels: (ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF)";
 		}
 
 		logger.log(Level.ERROR, "test");
-		return "The log level is now set to " + loglevel;
+		output = "The log level is now set to " + loglevel;
+
+		commandLine.printLine(output);
 	}
 
-	
 	@Override
-	public String getHelp() {
+	public void getHelp() {
 		String helpString = "All commands: "
 				+ "\r\n connect <address> <port> \t Establishes the connection to a server based on the given address and the port number"
 				+ "\r\n disconnect \t\t\t Disconnect from the connected server"
 				+ "\r\n send <message> \t\t Sends a text message to the server"
 				+ "\r\n logLevel <level> \t\t Sets the logger to the specified level"
 				+ "\r\n quit \t\t\t\t Exits the program execution";
-		return helpString;
+		commandLine.printLine(helpString);
 	}
 
-	// System actually does not shutdown. 
+	// System actually does not shutdown.
 	// This method could be replaced by the disconnect() method.
 	@Override
-	public String quit() {
-		String status = "";
-		status = disconnect() + "\r\nSystem will shutdown.";
-		return status;
+	public void quit() {
+		commandLine.printLine("\r\nSystem will shutdown.");
+		disconnect();
 	}
 }
