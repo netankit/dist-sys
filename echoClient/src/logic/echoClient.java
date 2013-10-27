@@ -2,13 +2,15 @@ package logic;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import communication.Connection;
 import communication.tcp.TCPConnection;
 
+
 public class echoClient implements ClientInterface {
 	private Connection connection = null;
-	
 	
 	public echoClient() {
 		this.connection = new TCPConnection();
@@ -21,15 +23,15 @@ public class echoClient implements ClientInterface {
 			int portnumber = Integer.parseInt(port);
 			connection.connect(new InetSocketAddress(address, portnumber));
 			return connection.receiveString(Connection.ASCII);
-			
+		
+		} catch (UnknownHostException e) {
+			return "The given host address could not be resolved. Please check if the address is valid.";	
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "error";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "error";
+			return "The given address or port is invalid.";
+		} catch (SocketTimeoutException e) {
+			return "Your request timed out. Please try again.";
+		} catch (IOException e) {
+			return "An error occured while trying to connect to the server.";
 		} 
 	}
 	
