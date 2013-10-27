@@ -71,12 +71,11 @@ public abstract class AbstractTCPConnection implements Connection {
 			in = socket.getInputStream();
 			out = socket.getOutputStream();
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} finally {
+			unlockWrite();
+			unlockRead();
 		}
 
-		unlockWrite();
-		unlockRead();
 	}
 
 	/**

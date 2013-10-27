@@ -5,6 +5,10 @@ import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import communication.Connection;
 import communication.tcp.TCPConnection;
 
@@ -14,6 +18,11 @@ public class echoClient implements ClientInterface {
 	
 	public echoClient() {
 		this.connection = new TCPConnection();
+		
+		Logger logger = LogManager.getLogger();
+		((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.DEBUG);
+		logger.log(Level.ERROR, "test");
+		
 	}
 	
 	// to do
