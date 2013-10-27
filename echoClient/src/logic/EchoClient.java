@@ -145,5 +145,11 @@ public class EchoClient implements CommandLineUser {
 	public void quit() {
 		commandLine.printLine("\r\nSystem will shutdown.");
 		disconnect();
+		try {
+			commandLine.close();
+		} catch (IOException e) {
+			// TODO Log this exception
+			e.printStackTrace();
+		}
 	}
 }
