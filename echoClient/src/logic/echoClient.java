@@ -16,12 +16,14 @@ public class echoClient implements ClientInterface {
 	private Connection connection = null;
 	private static Logger logger = LogManager.getLogger(echoClient.class);
 
+	
+
 	public echoClient() {
 		this.connection = new TCPConnection();
-		((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.ALL);
 	}
 
-	// to do
+
+	@Override
 	public String connect(String address, String port) {
 
 		try {
@@ -30,6 +32,7 @@ public class echoClient implements ClientInterface {
 			connection.connect(new InetSocketAddress(address, portnumber));
 			String reply = connection.receiveString(Connection.ASCII);
 			logger.info("Reply from server: " + reply);
+
 			return reply;
 
 		} catch (UnknownHostException e) {
@@ -37,25 +40,25 @@ public class echoClient implements ClientInterface {
 		} catch (IllegalArgumentException e) {
 			return "The given address or port is invalid.";
 		} catch (SocketTimeoutException e) {
-			return "Your request timed out. Please try again.";
+			return "Your request timed out. Could not connect to server.";
 		} catch (IOException e) {
-			return "An error occured while trying to connect to the server.";
+			return "An error occured. Could not connect to server.";
 		}
 	}
 
 	// to do
+	@Override
 	public String disconnect() {
 		try {
 			connection.close();
-			return "disconnected";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
+			return "Client was disconnected from the server.";
+		} catch (IOException e) {
+			return "Error while trying to disconnect from server.";
 		}
 	}
 
 	// to do
+	@Override
 	public String sendMessage(String message) {
 		try {
 			logger.info("This message will be send to server: " + message);
@@ -65,15 +68,13 @@ public class echoClient implements ClientInterface {
 			String reply = connection.receiveString(Connection.ASCII);
 			logger.info("Received reply message from server: " + reply);
 			return reply;
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
+		} catch (IOException e) {
+			return "An error occured. " + disconnect();
 		}
 	}
 
 	// to do: set all loggers to the right level
+	@Override
 	public String setLoglevel(String loglevel) {
 		loglevel = loglevel.toUpperCase();
 	
@@ -99,28 +100,24 @@ public class echoClient implements ClientInterface {
 		return "The log level is now set to " + loglevel;
 	}
 
-	// to do
+	
+	@Override
 	public String getHelp() {
-
 		String helpString = "All commands: "
 				+ "\r\n connect <address> <port> \t Establishes the connection to a server based on the given address and the port number"
 				+ "\r\n disconnect \t\t\t Disconnect from the connected server"
 				+ "\r\n send <message> \t\t Sends a text message to the server"
 				+ "\r\n logLevel <level> \t\t Sets the logger to the specified level"
 				+ "\r\n quit \t\t\t\t Exits the program execution";
-
 		return helpString;
 	}
 
-	// to do
+	// System actually does not shutdown. 
+	// This method could be replaced by the disconnect() method.
+	@Override
 	public String quit() {
-		try {
-			connection.close();
-			return "program shutdown";
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
-		}
+		String status = "";
+		status = disconnect() + "\r\nSystem will shutdown.";
+		return status;
 	}
 }

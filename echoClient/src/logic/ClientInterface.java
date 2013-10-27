@@ -39,6 +39,7 @@ public interface ClientInterface {
 	 * @param loglevel
 	 *            One of the following log4j log levels: (ALL | DEBUG | INFO |
 	 *            WARN | ERROR | FATAL | OFF)
+	 * @return A status message with the current log level.
 	 */
 	public String setLoglevel(String loglevel);
 
@@ -51,8 +52,8 @@ public interface ClientInterface {
 	public String getHelp();
 
 	/**
-	 * Tears down the active connection to the server and exits the program
-	 * execution.
+	 * Tears down the active connection to the server and returns the info message before program shutdown. 
+	 * System.exit() should be called right after this method to really quit the application.
 	 * 
 	 * @return The notification string about the program shutdown that should be
 	 *         displayed to the user.
