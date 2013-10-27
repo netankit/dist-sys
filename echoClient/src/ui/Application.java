@@ -4,14 +4,22 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Application {
 
-	// private static Logger logger = LogManager.getLogger();
+	private static Logger logger = LogManager.getLogger(Application.class);
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		// logger.info("Hello World!");
-		// logger.trace("Test");
+		/*// TODO Auto-generated method stub
+		Logger root = LogManager.getRootLogger();
+		//((org.apache.logging.log4j.core.Logger) root).setLevel(Level.ALL);
+		logger.info("logger info");
+		((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).setLevel(Level.OFF);
+		logger.info("logger info after");
+		logger.trace("Test");*/
 
 		String userInput;
 		String[] userInputArg;

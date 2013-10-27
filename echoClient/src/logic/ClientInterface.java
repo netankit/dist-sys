@@ -40,7 +40,7 @@ public interface ClientInterface {
 	 *            One of the following log4j log levels: (ALL | DEBUG | INFO |
 	 *            WARN | ERROR | FATAL | OFF)
 	 */
-	public void setLoglevel(String loglevel);
+	public String setLoglevel(String loglevel);
 
 	/**
 	 * Gets the help text with the intended usage of the client application and
