@@ -4,27 +4,27 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Application {
 
-	private static Logger logger = LogManager.getLogger();
+	// private static Logger logger = LogManager.getLogger();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		logger.info("Hello World!");
-		logger.trace("Test");
+		// logger.info("Hello World!");
+		// logger.trace("Test");
 
 		String userInput;
 		String[] userInputArg;
-
+		System.out.println("------------------------------");
+		System.out.println("## TEAM LAD : ECHO CLIENT ##");
+		System.out.println("==============================\n");
+		System.out
+				.println("USAGE 1: connect SERVER_IP_ADDRESS PORT\nUSAGE 2: send string_to_server");
+		System.out
+				.println("------------------------------------------------------------------------");
 		do {
 			Scanner in = new Scanner(System.in);
-			System.out
-					.println("USAGE 1: connect <IP_ADDR> <PORT>\nUSAGE 2: send <string>\nNote: Please don't use brackets. They are for explainatory purpose only.");
-
-			System.out.print("TeamLAD_Console > ");
+			System.out.print("\nTeamLAD_Console > ");
 			userInput = in.nextLine();
 
 			// Check if the userInput has a white space: The boolean variable
@@ -34,36 +34,37 @@ public class Application {
 			boolean isWhitespace = matcher.find();
 
 			if (isWhitespace) {
-				System.out.println("White Space Exists");
+				// System.out.println("White Space Exists");
 
+				// SPLIT ON WHITE SPACE
 				userInputArg = userInput.split(" ");
-				System.out.println("Input Length: " + userInputArg.length);
-				switch (userInputArg[0]) {
-				case "connect": {
+				// System.out.println("Input Length: " + userInputArg.length);
+
+				// CONNECT
+				if (userInputArg[0].equals("connect")) {
+
 					if (userInputArg.length == 3) {
 						System.out
 								.println("Connecting to the server: "
 										+ userInputArg[1] + " Port: "
 										+ userInputArg[2]);
-						break;
 
 						// ADD CODE HERE TO CONNECT TO SERVER
 
 					} else {
 						System.err
 								.println("Invalid syntax.\nUSAGE: connect <IP_ADDR> <PORT>");
-						break;
 					}
 
 				}
-
-				case "send": {
+				// SEND
+				else if (userInputArg[0].equals("send")) {
 					System.out
 							.println("Connection established. Now, sending the user string to server");
 
 					String userString = "";
 
-					for (int i = 1; i < (userInputArg.length - 1); i++) {
+					for (int i = 1; i < (userInputArg.length); i++) {
 						userString = userString + userInputArg[i] + " ";
 					}
 					// Trim the last white space character.
@@ -72,47 +73,39 @@ public class Application {
 					if (userInputArg.length > 1) {
 						System.out.println("Sending user string '" + userString
 								+ "' to the Server.");
-
-						// ADD CODE HERE FOR SENDING STRING TO THE SERVER -- We
-						// need
-						// to check here if the connection has been first
-						// established in the previous command!
-
-						// #####NEEDS DISCUSSION#######
+						// ADD CODE HERE FOR SENDING STRING TO THE SERVER
 
 					} else {
 						System.err
 								.println("Cannot send a blank string to the server.\nUSAGE: send <string>");
 					}
-					break;
-				}
-				default:
+				} else {
 					System.err.println("Invalid Input");
 				}
 
 			} else {
-				System.out.println("No white space!");
+				// System.out.println("No white space!");
 
-				switch (userInput) {
-
-				case "disconnect": {
+				// DISCONNECT
+				if (userInput.equals("disconnect")) {
 					System.out.println("Connection Terminated");
 
 					// ADD CODE HERE TO TERMINATE THE CONNECTION
-					break;
+
 				}
-				case "quit": {
+				// QUIT
+				else if (userInput.equals("quit")) {
 					System.out.println("Application Exit!");
+
 					// ADD CODE HERE TO TERMINATE THE APPLICATION
-					break;
 				}
 
-				default:
+				else {
 					System.err.println("Invalid Input");
 				}
 
 			}
-		} while (userInput.equalsIgnoreCase("quit"));
+		} while (!userInput.equalsIgnoreCase("quit"));
 
 	}
 }
