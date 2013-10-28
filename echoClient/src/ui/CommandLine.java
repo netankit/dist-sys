@@ -76,6 +76,7 @@ public class CommandLine implements Closeable {
 										+ userInputArg[2]);
 
 						// ADD CODE HERE TO CONNECT TO SERVER
+						user.connect(userInputArg[1], userInputArg[2]);
 
 					} else {
 						System.err
@@ -85,8 +86,8 @@ public class CommandLine implements Closeable {
 				}
 				// SEND
 				else if (userInputArg[0].equals("send")) {
-					System.out
-							.println("Connection established. Now, sending the user string to server");
+					// System.out
+					// .println("Connection established. Now, sending the user string to server");
 
 					String userString = "";
 
@@ -100,6 +101,7 @@ public class CommandLine implements Closeable {
 						System.out.println("Sending user string '" + userString
 								+ "' to the Server.");
 						// ADD CODE HERE FOR SENDING STRING TO THE SERVER
+						user.sendMessage(userString);
 
 					} else {
 						System.err
@@ -117,6 +119,7 @@ public class CommandLine implements Closeable {
 					System.out.println("Connection Terminated");
 
 					// ADD CODE HERE TO TERMINATE THE CONNECTION
+					user.disconnect();
 
 				}
 				// QUIT
@@ -124,6 +127,12 @@ public class CommandLine implements Closeable {
 					System.out.println("Application Exit!");
 
 					// ADD CODE HERE TO TERMINATE THE APPLICATION
+					user.quit();
+				} else if (userInput.equals("help")) {
+					System.out.println("May I help You!");
+
+					// ADD CODE HERE TO TERMINATE THE APPLICATION
+					user.getHelp();
 				}
 
 				else {
@@ -151,7 +160,8 @@ public class CommandLine implements Closeable {
 	public void printLine(String str) {
 		synchronized (System.out) {
 			// TODO
-			new Throwable("Not implemented").printStackTrace();
+			// new Throwable("Not implemented").printStackTrace();
+			System.out.println(str);
 		}
 	}
 
