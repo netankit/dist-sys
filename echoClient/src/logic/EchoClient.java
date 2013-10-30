@@ -1,7 +1,9 @@
 package logic;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
+import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -17,6 +19,7 @@ import communication.tcp.TCPConnection;
 public class EchoClient implements CommandLineUser {
 	private Connection connection = null;
 	private static Logger logger = LogManager.getLogger(EchoClient.class);
+	boolean isConnected = false;
 
 	private CommandLine commandLine;
 
@@ -26,6 +29,7 @@ public class EchoClient implements CommandLineUser {
 		commandLine.start();
 	}
 
+	// to do : connection lost check
 	@Override
 	public void connect(String address, String port) {
 
@@ -37,7 +41,7 @@ public class EchoClient implements CommandLineUser {
 			connection.connect(new InetSocketAddress(address, portnumber));
 			String reply = connection.receiveString(Connection.ASCII);
 			logger.info("Reply from server: " + reply);
-
+			isConnected = true;
 			output = reply;
 
 		} catch (UnknownHostException e) {
@@ -46,43 +50,56 @@ public class EchoClient implements CommandLineUser {
 			output = "The given address or port is invalid.";
 		} catch (SocketTimeoutException e) {
 			output = "Your request timed out. Could not connect to server.";
-		} catch (IOException e) {
-			output = "An error occured. Could not connect to server.";
-		}
+		} catch (ConnectException e) {
+			output = "Error connecting to server: " + e.getMessage();
+		 } catch (NoRouteToHostException e) {
+			output = "Route to host unknown. Is connection to server available?";
+		 } catch (IOException e) {
+				output = "An error occured. Could not connect to server.";
+			}
 
 		commandLine.printLine(output);
 	}
 
-	// to do
+	// to do: check if server is connected
 	@Override
 	public void disconnect() {
 
 		String output;
-
+	if (isConnected){
 		try {
 			connection.close();
+			isConnected = false;
 			output = "Client was disconnected from the server.";
 		} catch (IOException e) {
 			output = "Error while trying to disconnect from server.";
 		}
-
+	} else {
+		output = "Client is not connected to a server.";
+	}
 		commandLine.printLine(output);
 	}
 
-	// to do
+	// TO DO: check if server is connected
 	@Override
 	public void sendMessage(String message) {
 
 		String output;
 
 		try {
-			logger.info("This message will be send to server: " + message);
-			connection.sendString(
-					message + Connection.DEFAULT_STRING_DELIMITER,
-					Connection.ASCII);
-			String reply = connection.receiveString(Connection.ASCII);
-			logger.info("Received reply message from server: " + reply);
-			output = reply;
+
+			if (isConnected) {
+				logger.info("This message will be send to server: " + message);
+				connection
+						.sendString(message
+								+ Connection.DEFAULT_STRING_DELIMITER,
+								Connection.ASCII);
+				String reply = connection.receiveString(Connection.ASCII);
+				logger.info("Received reply message from server: " + reply);
+				output = reply;
+			} else {
+				output = "Please connect to a server first.";
+			}
 		} catch (IOException e) {
 			output = "An error occured.";
 			disconnect();
@@ -91,7 +108,7 @@ public class EchoClient implements CommandLineUser {
 		commandLine.printLine(output);
 	}
 
-	// to do: set all loggers to the right level
+	// TO DO: set all loggers to the right level
 	@Override
 	public void setLoglevel(String loglevel) {
 
@@ -139,12 +156,13 @@ public class EchoClient implements CommandLineUser {
 		commandLine.printLine(helpString);
 	}
 
-	// System actually does not shutdown.
-	// This method could be replaced by the disconnect() method.
+	// To do: check if client is connected to server
 	@Override
 	public void quit() {
 		commandLine.printLine("\r\nSystem will shutdown.");
-		disconnect();
+		if (isConnected) {
+			disconnect();
+		}
 		try {
 			commandLine.close();
 		} catch (IOException e) {
