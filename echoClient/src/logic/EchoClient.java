@@ -7,9 +7,13 @@ import java.net.NoRouteToHostException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.Level;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import ui.CommandLine;
 import ui.CommandLineUser;
@@ -35,6 +39,15 @@ public class EchoClient implements CommandLineUser {
 
 		String output;
 
+		if (isConnected) {
+			try {
+				connection.close();
+				isConnected = false;
+			} catch (IOException e1) {
+				logger.warn("During closing running connection:", e1);
+			}
+		}
+
 		try {
 			int portnumber = Integer.parseInt(port);
 			logger.info("Try to connect to server: " + address + " " + port);
@@ -52,11 +65,11 @@ public class EchoClient implements CommandLineUser {
 			output = "Your request timed out. Could not connect to server.";
 		} catch (ConnectException e) {
 			output = "Error connecting to server: " + e.getMessage();
-		 } catch (NoRouteToHostException e) {
+		} catch (NoRouteToHostException e) {
 			output = "Route to host unknown. Is connection to server available?";
-		 } catch (IOException e) {
-				output = "An error occured. Could not connect to server.";
-			}
+		} catch (IOException e) {
+			output = "An error occured. Could not connect to server.";
+		}
 
 		commandLine.printLine(output);
 	}
@@ -66,17 +79,17 @@ public class EchoClient implements CommandLineUser {
 	public void disconnect() {
 
 		String output;
-	if (isConnected){
-		try {
-			connection.close();
-			isConnected = false;
-			output = "Client was disconnected from the server.";
-		} catch (IOException e) {
-			output = "Error while trying to disconnect from server.";
+		if (isConnected) {
+			try {
+				connection.close();
+				isConnected = false;
+				output = "Client was disconnected from the server.";
+			} catch (IOException e) {
+				output = "Error while trying to disconnect from server.";
+			}
+		} else {
+			output = "Client is not connected to a server.";
 		}
-	} else {
-		output = "Client is not connected to a server.";
-	}
 		commandLine.printLine(output);
 	}
 
@@ -108,38 +121,34 @@ public class EchoClient implements CommandLineUser {
 		commandLine.printLine(output);
 	}
 
-	// TO DO: set all loggers to the right level
 	@Override
 	public void setLoglevel(String loglevel) {
 
 		String output;
+		Logger root = LogManager.getRootLogger();
 
 		loglevel = loglevel.toUpperCase();
 
 		if (loglevel.equals("ALL")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.ALL);
+			root.setLevel(Level.ALL);
 		} else if (loglevel.equals("DEBUG")) {
-			((org.apache.logging.log4j.core.Logger) logger)
-					.setLevel(Level.DEBUG);
+			root.setLevel(Level.DEBUG);
 		} else if (loglevel.equals("INFO")) {
-			((org.apache.logging.log4j.core.Logger) logger)
-					.setLevel(Level.INFO);
+			root.setLevel(Level.INFO);
 		} else if (loglevel.equals("WARN")) {
-			((org.apache.logging.log4j.core.Logger) logger)
-					.setLevel(Level.WARN);
+			root.setLevel(Level.WARN);
 		} else if (loglevel.equals("ERROR")) {
-			((org.apache.logging.log4j.core.Logger) logger)
-					.setLevel(Level.ERROR);
+			root.setLevel(Level.ERROR);
 		} else if (loglevel.equals("FATAL")) {
-			((org.apache.logging.log4j.core.Logger) logger)
-					.setLevel(Level.FATAL);
+			root.setLevel(Level.FATAL);
 		} else if (loglevel.equals("OFF")) {
-			((org.apache.logging.log4j.core.Logger) logger).setLevel(Level.OFF);
+			root.setLevel(Level.OFF);
 		} else {
 			output = "The loglevel is invalid. Levels: (ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF)";
+			commandLine.printLine(output);
+			return;
 		}
 
-		logger.log(Level.ERROR, "test");
 		output = "The log level is now set to " + loglevel;
 
 		commandLine.printLine(output);
@@ -156,7 +165,6 @@ public class EchoClient implements CommandLineUser {
 		commandLine.printLine(helpString);
 	}
 
-	// To do: check if client is connected to server
 	@Override
 	public void quit() {
 		commandLine.printLine("\r\nSystem will shutdown.");
@@ -166,8 +174,7 @@ public class EchoClient implements CommandLineUser {
 		try {
 			commandLine.close();
 		} catch (IOException e) {
-			// TODO Log this exception
-			e.printStackTrace();
+			logger.warn("Error during application shutdown:", e);
 		}
 	}
 }
