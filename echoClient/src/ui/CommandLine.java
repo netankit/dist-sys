@@ -107,6 +107,29 @@ public class CommandLine implements Closeable {
 						System.err
 								.println("Cannot send a blank string to the server.\nUSAGE: send <string>");
 					}
+					/*
+					 * ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF)
+					 */
+				} else if (userInputArg[0].equals("logLevel")) {
+					if (!userInputArg[1].equals("")) {
+						if (userInputArg[1].equals("ALL")) {
+							user.setLoglevel("ALL");
+						} else if (userInputArg[1].equals("DEBUG")) {
+							user.setLoglevel("DEBUG");
+						} else if (userInputArg[1].equals("INFO")) {
+							user.setLoglevel("INFO");
+						} else if (userInputArg[1].equals("WARN")) {
+							user.setLoglevel("WARN");
+						} else if (userInputArg[1].equals("ERROR")) {
+							user.setLoglevel("ERROR");
+						} else if (userInputArg[1].equals("FATAL")) {
+							user.setLoglevel("FATAL");
+						} else if (userInputArg[1].equals("OFF")) {
+							user.setLoglevel("OFF");
+						}
+
+					}
+
 				} else {
 					System.err.println("Invalid Input");
 				}
